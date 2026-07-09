@@ -16,6 +16,7 @@
 import json
 from collections import defaultdict
 import os
+import sys
 import re
 import json
 import csv
@@ -150,7 +151,10 @@ def run_metricx_evaluation(aggregated_windows):
         metricx_ref_output_name = metricx_ref_output.name
 
         metricx_ref_command = [
-            "python", "-m", "metricx24.predict",
+            sys.executable,
+            "-P", # safe-path: avoid finding any local copy
+            "-m",
+            "metricx24.predict",
             "--tokenizer", "google/mt5-large",
             "--model_name_or_path", "google/metricx-24-hybrid-large-v2p6",
             "--max_input_length", "1536",
@@ -159,7 +163,7 @@ def run_metricx_evaluation(aggregated_windows):
             "--output_file", metricx_ref_output_name,
         ]
     
-        result_metricx_ref = subprocess.run(metricx_ref_command, stdout=subprocess.PIPE, text=True)
+        result_metricx_ref = subprocess.run(metricx_ref_command, stdout=subprocess.PIPE, text=True, check=True)
         print(result_metricx_ref.stdout)
 
         metricx_ref_scores = []
@@ -204,7 +208,10 @@ def run_metricx_qe_evaluation(aggregated_windows):
         metricx_qe_output_name = metricx_qe_output.name
 
         metricx_qe_command = [
-            "python", "-m", "metricx24.predict",
+            sys.executable,
+            "-P", # safe-path: avoid finding any local copy
+            "-m",
+            "metricx24.predict",
             "--tokenizer", "google/mt5-large",
             "--model_name_or_path", "google/metricx-24-hybrid-large-v2p6",
             "--max_input_length", "1536",

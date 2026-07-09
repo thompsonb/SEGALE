@@ -45,7 +45,7 @@ Depending on how you install, you may want to make some of the following edits:
 Installation itself is very easy:
 
 ```
-git clone --recurse-submodules https://github.com/nvlabs/SEGALE
+git clone https://github.com/nvlabs/SEGALE
 cd SEGALE
 pip install -e .
 ```
@@ -55,9 +55,9 @@ This will add two new commands in your workspace: `segale-align` and `segale-eva
 To run `segale-eval`, you should download the following models:
 
 ```
-huggingface-cli download google/metricx-24-hybrid-large-v2p6
-huggingface-cli download Unbabel/wmt22-comet-da
-huggingface-cli download Unbabel/wmt22-cometkiwi-da
+hf download google/metricx-24-hybrid-large-v2p6
+hf download Unbabel/wmt22-comet-da
+hf download Unbabel/wmt22-cometkiwi-da
 ```
 
 ## Usage
@@ -71,10 +71,11 @@ git clone https://huggingface.co/datasets/rl-bandits-lab/SEGALE-WMT24 data
 
 ### Step 1: Src-Ref-Tgt Alignment (`segale-align`)
 
-To align a system output file (tgt) with the source (src) and the segmented reference (ref), use the following command. For example, given a system file like `data/wmt24/json_output_ja_zh/raw/GPT-4.jsonl`, and a reference file like `spacy_ref_A.jsonl`, run:
+To align a system output file (tgt) with the source (src) and the segmented reference (ref), use the following command. For example, given a system file like `data/wmt24/json_output_ja_zh/raw/GPT-4.jsonl`, and a reference file like `data/wmt24/json_output_ja_zh/raw/ref_A.jsonl`, run:
 
 ```bash
-segale-align --system_file data/wmt24/json_output_ja_zh/raw/GPT-4.jsonl --ref_file data/wmt24/json_output_ja_zh/raw/spacy_ref_A.jsonl --segmenter spacy --task_lang zh --proc_device cuda -v
+python -m spacy download zh_core_web_sm
+segale-align --system_file data/wmt24/json_output_ja_zh/raw/GPT-4.jsonl --ref_file data/wmt24/json_output_ja_zh/raw/ref_A.jsonl --segmenter spacy --task_lang zh --proc_device cuda -v
 ```
 
 > - `--segmenter`: Choose between `spacy` or `ersatz`.

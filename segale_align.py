@@ -14,6 +14,7 @@
 # limitations under the License.
 
 import os
+import sys
 import json
 import spacy
 import torch
@@ -34,7 +35,8 @@ import torch.nn.functional as F
 # -----------------------------------------------------------------------------
 # Global Variables
 # -----------------------------------------------------------------------------
-LASER_DIR = "/opt/LASER"
+LASER_DIR = os.environ.get("LASER", os.path.expanduser("~/.cache/laser"))
+os.makedirs(LASER_DIR, exist_ok=True)
 
 
 # -----------------------------------------------------------------------------
@@ -76,8 +78,15 @@ def segment_sentences_by_ersatz(text: str) -> list:
         input_filename = temp_in.name
     output_filename = input_filename + ".segmented"
     subprocess.run(
-        ["ersatz", "--input", input_filename, "--output", output_filename], check=True
-    )
+        [sys.executable,
+         "-P", # safe-path: avoid finding any local copy
+         "-m",
+         "ersatz.split",
+         "--input",
+         input_filename,
+         "--output",
+         output_filename],
+        check=True)
     with open(output_filename, "r", encoding="utf-8") as f:
         segmented_text = f.read()
     os.remove(input_filename)
@@ -366,7 +375,10 @@ def run_vecalign_explore(
     while del_percentile_frac > 0.01:
         result = subprocess.run(
             [
-                "vecalign",
+                sys.executable,
+                "-P",  # safe-path: avoid finding any local copy
+                "-m",
+                "vecalign.vecalign",
                 "--alignment_max_size",
                 str(max_size),
                 "--del_percentile_frac",
@@ -384,6 +396,7 @@ def run_vecalign_explore(
             ],
             stdout=subprocess.PIPE,
             text=True,
+            check=True,
         )
 
         output_lines = result.stdout.strip().split("\n")

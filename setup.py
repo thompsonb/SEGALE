@@ -21,21 +21,23 @@ setup(
     py_modules=['segale_align', 'segale_eval'],
     packages=find_packages(),
     install_requires=[
-        'spacy==3.8.4',
-        'torch==2.5.0',
-        'numpy==1.23.5',
+        'spacy==3.8.14',
+        'torch==2.12.0',
+        'numpy==1.26.4',
         'pandas==2.2.3',
         'tqdm==4.67.1',
         'transformers==4.51.3',
         'unbabel-comet==2.2.7',
-        'hydra-core==1.3.2',
-        'Cython==3.0.11',
+        'vecalign @ git+https://github.com/thompsonb/vecalign@v2.0.0',
+        # Forked from facebookresearch/LASER: fairseq removed from install_requires,
+        # fairseq imports wrapped in try/except so the module loads without fairseq
+        # (which conflicts with python>=3.10)
+        'laser-encoders @ git+https://github.com/jeffwillette/LASER.git@14ba8c31efe48c351333ff0159fe2d25a6aaee37',
     ],
     entry_points={
         'console_scripts': [
             'segale-align = segale_align:main',
             'segale-eval = segale_eval:main',
-            'vecalign = vecalign.vecalign:_main',
         ],
     },
 )
